@@ -115,7 +115,7 @@ Almost all functions accept the following basic parameters:
 	    <td>The Filename (may include (absolute) path) to read from and save to (for all functions that write an output file).<br />
          <b>Note:</b> by default a filename_copy will be created, use the ! prefix if you want to OverWrite the TextFile (e.g. the source file)<br />
 	     As of v3 "Text" can also be a variable or indeed text directly passed on to the function.<br />
-         See <a href='#TextfileAndPrefix'>Textfile and the ! Prefix</a>.
+         See <a href='#textfile-and-the--prefix'>Textfile and the ! Prefix</a>.
 	    </td>
 	  </tr>
       <tr valign="top">
@@ -123,7 +123,7 @@ Almost all functions accept the following basic parameters:
         <td>If Text starts with ! (eg: "!c:\sample.txt") it will overwrite the text file, otherwise it will save the new file to a copy of the text file eg: Filename_copy.txt (All, apart from reading functions because there is no output file) <br />
         <b>Tip:</b> you can use concatenation to add the !, e.g. "!" . Filename.txt, see the examples in the AHK thread.<br />
         Note: If Text is a variable, it can start with a ! as TF will detect automatically that it is not a file and will therefore not create a file but return the altered variable instead.<br />
-        See <a href='#TextfileAndPrefix'>Textfile and the ! Prefix</a>.
+        See <a href='#textfile-and-the--prefix'>Textfile and the ! Prefix</a>.
 	    </td>
 	  </tr>
       <tr valign="top">
@@ -133,13 +133,13 @@ Almost all functions accept the following basic parameters:
       <tr valign="top">
         <td>StartLine</td>
         <td>Start of Range (Almost all).<br />
-	    See <a href='#StartLine'>(StartLine, Endline) Syntax</a>.
+	    See <a href='#startline-endline-syntax'>(StartLine, Endline) Syntax</a>.
 	    </td>
 	  </tr>
       <tr valign="top">
         <td>EndLine</td>
         <td> End of Range (Almost all).<br />
-  	    See <a href='#StartLine'>(StartLine, Endline) Syntax</a>.
+  	    See <a href='#startline-endline-syntax'>(StartLine, Endline) Syntax</a>.
 	    </td>
 	  </tr>
       <tr valign="top">
@@ -160,7 +160,6 @@ a backup is made before overwriting the original file (both for file.txt and fil
 with the BAK extension
 3. You can find examples of most functions in the "example script" here [http://www.autohotkey.com/forum/viewtopic.php?p=280363#280363](http://www.autohotkey.com/forum/viewtopic.php?p=280363#280363)
 
-<a name="#Startline"></a>
 ### (StartLine, Endline) Syntax
 
 You can pass on multiple lines (sections) by using the StartLine parameter.
@@ -424,6 +423,7 @@ Notes:
    ```autohotkey
    TF_ReplaceInLines("!File.txt","1,3,9","","key","lock") ;  update source file, replace "key" with "lock" in lines 1, 3 and 9
    ```
+
 <a name="TF_RegExReplace"></a>
 **TF_RegExReplace(Text, NeedleRegEx = "", Replacement = "")**
 
@@ -434,6 +434,7 @@ Notes:
    ```autohotkey
    TF_RegExReplace("File.txt","im)^(.*)$","[$1]") ; pass on a file, wrap all lines in []
    ```
+
 <a name="TF_RegExReplaceInLines"></a>
 **TF_RegExReplaceInLines(Text, StartLine = 1, EndLine = 0, NeedleRegEx= "", Replacement = "")**
 
