@@ -1,6 +1,6 @@
 /*
 Name          : TF: Textfile & String Library for AutoHotkey
-Version       : 3.4
+Version       : 3.5
 Documentation : https://github.com/hi5/TF
 AHKScript.org : http://www.ahkscript.org/boards/viewtopic.php?f=6&t=576
 AutoHotkey.com: http://www.autohotkey.com/forum/topic46195.html (Also for examples)
@@ -460,14 +460,28 @@ TF_LineNumber(Text, Leading = 0, Restart = 0, Char = 0) ; HT ribbet.1
 	}
 
 ; skip = 1, skip shorter lines (e.g. lines shorter startcolumn position)
-; modified in TF 3.4
+; modified in TF 3.4, fixed in 3.5
 TF_ColGet(Text, StartLine = 1, EndLine = 0, StartColumn = 1, EndColumn = 1, Skip = 0)
 	{ 
 	 TF_GetData(OW, Text, FileName)
 	 TF_MatchList:=_MakeMatchList(Text, StartLine, EndLine, 0, A_ThisFunc) ; create MatchList
+	 If (StartColumn < 0)
+	 	{
+		 StartColumn++
+		 Loop, Parse, Text, `n, `r ; parsing file/var
+			{
+			 If A_Index in %TF_MatchList% 
+				{
+				 output .= SubStr(A_LoopField,StartColumn) "`n"
+				}
+			 else
+				 output .= A_LoopField "`n"
+			}
+	 	 Return TF_ReturnOutPut(OW, OutPut, FileName)
+	 	}
 	 if RegExMatch(StartColumn, ",|\+|-") 
 		{
-		 StartColumn:=_MakeMatchList(Text, StartColumn, EndColumn, 1)
+		 StartColumn:=_MakeMatchList(Text, StartColumn, 1, 1)
 		 Loop, Parse, Text, `n, `r ; parsing file/var
 			{
 			 If A_Index in %TF_MatchList% 
@@ -740,43 +754,43 @@ TF_SplitFileByText(Text, SplitAt, Prefix = "file", Extension = "txt", InFile = 1
 	 SplitPath, TextFile,, Dir
 	 Loop, Parse, Text, `n, `r
 		{
-			 OutPut .= A_LoopField "`n"
-			 FoundPos:=RegExMatch(A_LoopField, SplitAt)
-			 If (FoundPos > 0)
+		 OutPut .= A_LoopField "`n"
+		 FoundPos:=RegExMatch(A_LoopField, SplitAt)
+		 If (FoundPos > 0)
+			{
+			 If (InFile = 0)
 				{
-				 If (InFile = 0)
-					{
-					 StringReplace, CheckOutput, PreviousOutput, `n, , All
-					 StringReplace, CheckOutput, CheckOutput, `r, , All
-					 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
-						TF_ReturnOutPut(1, PreviousOutput, Prefix FileCounter "." Extension, 0, 1) 
-					 If (CheckOutput <> "") and (OW = 2) ; output to array
-						TF_SetGlobal(Prefix FileCounter,PreviousOutput)
-					 Output:=
-					}
-				 If (InFile = 1)
-					{
-					 StringReplace, CheckOutput, Output, `n, , All
-					 StringReplace, CheckOutput, CheckOutput, `r, , All
-					 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
-						TF_ReturnOutPut(1, Output, Prefix FileCounter "." Extension, 0, 1) 
-					 If (CheckOutput <> "") and (OW = 2) ; output to array
-						TF_SetGlobal(Prefix FileCounter,Output)
-					 Output:=
-					}
-				 If (InFile = 2)
-					{
-					 OutPut := PreviousOutput
-					 StringReplace, CheckOutput, Output, `n, , All
-					 StringReplace, CheckOutput, CheckOutput, `r, , All
-					 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
-						TF_ReturnOutPut(1, Output, Prefix FileCounter "." Extension, 0, 1) 
-					 If (CheckOutput <> "") and (OW = 2) ; output to array
-						TF_SetGlobal(Prefix FileCounter,Output)
-					 OutPut := A_LoopField "`n"
-					}
-			 LineCounter=0 ; reset
-			 FileCounter++ ; next file
+				 StringReplace, CheckOutput, PreviousOutput, `n, , All
+				 StringReplace, CheckOutput, CheckOutput, `r, , All
+				 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
+					TF_ReturnOutPut(1, PreviousOutput, Prefix FileCounter "." Extension, 0, 1) 
+				 If (CheckOutput <> "") and (OW = 2) ; output to array
+					TF_SetGlobal(Prefix FileCounter,PreviousOutput)
+				 Output:=
+				}
+			 If (InFile = 1)
+				{
+				 StringReplace, CheckOutput, Output, `n, , All
+				 StringReplace, CheckOutput, CheckOutput, `r, , All
+				 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
+					TF_ReturnOutPut(1, Output, Prefix FileCounter "." Extension, 0, 1) 
+				 If (CheckOutput <> "") and (OW = 2) ; output to array
+					TF_SetGlobal(Prefix FileCounter,Output)
+				 Output:=
+				}
+			 If (InFile = 2)
+				{
+				 OutPut := PreviousOutput
+				 StringReplace, CheckOutput, Output, `n, , All
+				 StringReplace, CheckOutput, CheckOutput, `r, , All
+				 If (CheckOutput <> "") and (OW <> 2) ; skip empty files
+					TF_ReturnOutPut(1, Output, Prefix FileCounter "." Extension, 0, 1) 
+				 If (CheckOutput <> "") and (OW = 2) ; output to array
+					TF_SetGlobal(Prefix FileCounter,Output)
+				 OutPut := A_LoopField "`n"
+				}
+		 	 LineCounter=0 ; reset
+		 	 FileCounter++ ; next file
 			}
 		 LineCounter++
 		 PreviousOutput:=Output
@@ -1119,16 +1133,16 @@ TF_Sort(Text, SortOptions = "", StartLine = 1, EndLine = 0) ; use the SORT optio
 	 If (StartLine = 1) and (Endline = 0) ; process entire file
 		{
 		 Output:=Text
-	 	 Sort, Output, %SortOptions%
-	 	}
+		 Sort, Output, %SortOptions%
+		}
 	 Else
-	 	{
-	 	 Output := TF_ReadLines(Text, 1, StartLine-1) ; get first section
-	 	 ToSort := TF_ReadLines(Text, StartLine, EndLine) ; get section to sort
-	 	 Sort, ToSort, %SortOptions%
-	 	 OutPut .= ToSort
-	 	 OutPut .= TF_ReadLines(Text, EndLine+1) ; append last section
-	 	} 
+		{
+		 Output := TF_ReadLines(Text, 1, StartLine-1) ; get first section
+		 ToSort := TF_ReadLines(Text, StartLine, EndLine) ; get section to sort
+		 Sort, ToSort, %SortOptions%
+		 OutPut .= ToSort
+		 OutPut .= TF_ReadLines(Text, EndLine+1) ; append last section
+		} 
 	 Return TF_ReturnOutPut(OW, OutPut, FileName)
 	}
 
@@ -1326,7 +1340,7 @@ TF_ReturnOutPut(OW, Text, FileName, TrimTrailing = 1, CreateNewFile = 0) {
 			 StringTrimRight, Text, Text, 1 ; remove trailing `n
 		 SplitPath, FileName,, Dir, Ext, Name
 		 If (Dir = "") ; if Dir is empty Text & script are in same directory
-			Dir := A_ScriptDir
+			Dir := A_WorkingDir
 		 IfExist, % Dir "\backup" ; if there is a backup dir, copy original file there
 			FileCopy, % Dir "\" Name "_copy." Ext, % Dir "\backup\" Name "_copy.bak", 1
 		 FileDelete, % Dir "\" Name "_copy." Ext
@@ -1345,7 +1359,7 @@ TF_ReturnOutPut(OW, Text, FileName, TrimTrailing = 1, CreateNewFile = 0) {
 			 StringTrimRight, Text, Text, 1 ; remove trailing `n
 		 SplitPath, FileName,, Dir, Ext, Name
 		 If (Dir = "") ; if Dir is empty Text & script are in same directory
-			Dir := A_ScriptDir
+			Dir := A_WorkingDir
 		 IfExist, % Dir "\backup" ; if there is a backup dir, copy original file there
 			FileCopy, % Dir "\" Name "." Ext, % Dir "\backup\" Name ".bak", 1
 		 FileDelete, % Dir "\" Name "." Ext
