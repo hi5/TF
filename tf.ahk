@@ -1,6 +1,6 @@
 /*
 Name          : TF: Textfile & String Library for AutoHotkey
-Version       : 3.5
+Version       : 3.6
 Documentation : https://github.com/hi5/TF
 AHKScript.org : http://www.ahkscript.org/boards/viewtopic.php?f=6&t=576
 AutoHotkey.com: http://www.autohotkey.com/forum/topic46195.html (Also for examples)
@@ -1257,6 +1257,11 @@ TF_SetGlobal(var, content = "") ; helper function for TF_Split* to return array 
 ; Update 11 January 2010 (skip filecheck if `n in Text -> can't be file)
 TF_GetData(byref OW, byref Text, byref FileName) 
 	{
+	 If (text = 0) ; v3.6 
+		{
+		 MsgBox, 48, TF Lib Error, % "Read Error:`npossible reason: perhaps you used ! vs ""!"" ?"
+		 ExitApp
+		}
 	 OW=0 ; default setting: asume it is a file and create file_copy
 	 IfNotInString, Text, `n ; it can be a file as the Text doesn't contact a newline character
 		{

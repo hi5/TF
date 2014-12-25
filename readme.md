@@ -1,4 +1,4 @@
-# TF: Textfile & String Library for AutoHotkey [lib] - v3.5
+# TF: Textfile & String Library for AutoHotkey [lib] - v3.6
 
 __A "Swiss Army Knife" library for Text (files)__
 
@@ -989,6 +989,10 @@ OverWrite = 1 will overwrite filename.ext if filename.ext exists (default)
 ~~~~
 
 # History
+
+**History v3.6, 25 December 2014**
+
+- Added: Added additional minor error check in TF_GetData - if "Text" is "false", there is nothing to process so ExitApp
 
 **History v3.5, 2 August 2014**
 
