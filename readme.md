@@ -508,7 +508,7 @@ TF_InsertLine("File.txt","2,4,9",5,"---")     ; insert --- in lines 2 4 and 9. 5
 TF_ReplaceLine("File.txt","1+3",8,"---")      ; replace lines 1 4 and 7. 8 is end line so no more lines are processed after 
    ```
 
-<a name="TF_InsertSuffix"></a>
+<a name="TF_InsertPrefix"></a>
 **TF_InsertPrefix(Text, StartLine = 1, EndLine = 0, Text = "")**
 
 - Purpose: Insert a text at the BEGINNING of each of the specified lines
@@ -992,7 +992,7 @@ OverWrite = 1 will overwrite filename.ext if filename.ext exists (default)
 
 **History v3.6, 25 December 2014**
 
-- Added: Added additional minor error check in TF_GetData - if "Text" is "false", there is nothing to process so ExitApp
+- Added: Added additional minor error check in TF_GetData - if "Text" is "false", there is nothing to process so Exit
 
 **History v3.5, 2 August 2014**
 
