@@ -1,4 +1,4 @@
-# TF: Textfile & String Library for AutoHotkey [lib] - v3.6
+# TF: Textfile & String Library for AutoHotkey [lib] - v3.7
 
 __A "Swiss Army Knife" library for Text (files)__
 
@@ -121,7 +121,7 @@ Almost all functions accept the following basic parameters:
       <tr valign="top">
         <td>! Prefix</td>
         <td>If Text starts with ! (eg: "!c:\sample.txt") it will overwrite the text file, otherwise it will save the new file to a copy of the text file eg: Filename_copy.txt (All functions, apart from reading functions because there is no output file) <br />
-        <b>Tip:</b> you can use concatenation to add the !, e.g. "!" . Filename.txt, see the examples in the AHK thread.<br />
+        <b>Tip:</b> you can use concatenation to add the !, e.g. "!" . "Filename.txt", see the examples in the AHK thread.<br />
         Note: If Text is a variable, it can start with a ! as TF will detect automatically that it is not a file and will therefore not create a file but return the altered variable instead.<br />
         See <a href='#textfile-and-the--prefix'>Textfile and the ! Prefix</a>.
 	    </td>
@@ -185,7 +185,7 @@ Negative Startline
 
 Valid examples for using a Textfile:
 
-   ```autohotkey
+```autohotkey
 TF_("file.txt", .... ; Process file.txt and write output to file_copy.txt
 
 F=file.txt ; ; Note how F is a variable, but AHK/TF will see it is meant to represent file.txt and write output to file_copy.txt
@@ -206,17 +206,17 @@ Loop, *.txt
     {
      TF_(A_LoopFileName, .... ; Process file and write output to file_copy
     }
-   ```
+```
 
 If you want to use multiple TF functions on a single file it is advised to use the ! Prefix
 
-   ```autohotkey
+```autohotkey
 F=!file.txt 
 TF_RemoveBlankLines(F)        ; remove all empty lines from file.txt and overwrite original file.txt
 TF_LineNumber(F)              ; add linenumbers to all lines and overwrite original file.txt
 TF_Replace(F, "this", "that") ; Replace the word "this" with "that" and overwrite original file.txt
 ; So the original file.txt has undergone three changes
-   ```
+```
 
 **Files & Variables (v3+)**
 
@@ -229,9 +229,10 @@ In order to save you the trouble of using a fileread to read a file into
 a variable and proceed to use various TF functions there is the TF()
 Function.
 
-   ```autohotkey
+
+```autohotkey
 TF("pathtofile", CreateGlobalVar="T")
-   ```
+```
 
 By default it reads the contents of the file in a global variable named **t** and 
 returns it for further processing. By default it creates variable **t** if a variable
@@ -244,16 +245,20 @@ global variable if you use the TF() function.
 **Repeat:** You only have to use TF() if you want to read a file into a variable 
 and use it on multiple TF_\* Functions but it is NOT required.
 
+See also [TF Lib Errors](#tf-lib-errors) below.
+
 **TF() Examples:**
 
-   ```autohotkey
+
+```autohotkey
 TF("file.txt") ; will create global var t
 TF("file.txt", "MyVar") ; will create global var MyVar
-   ```
+```
    
 **Examples on how to use files & variables with TF:**
 
-   ```autohotkey
+
+```autohotkey
 #Include tf.ahk
 TestFile= ; create variable
 (join`r`n
@@ -303,24 +308,26 @@ MsgBox % "TF(), example 5:`n" t
 Clipboard=Line 1`nLine 2`nLine 3`nLine 4`nLine 5`nLine 6`nLine 7`nLine 8
 Clipboard:=TF_RemoveLines(Clipboard, 3, 6) ; remove lines 3 to 6
 MsgBox % "Clipboard, example 6:`n" Clipboard
-   ```
+```
     
 **Note** TF_Merge, TF_Prepend, TF_Append currently do not support variables and only work with FILES.
 
 **Common mistake(s):**
 
-   ```autohotkey
+
+```autohotkey
 MyVar:=TF_ReadLines("TestFile.txt",5) ; this is wrong. It is AN INCORRECT EXAMPLE!
-   ```
+```
 
 The example above is incorrect: You pass on a file so the output is
 testfile_copy.txt. In this case nothing meaningful is assigned to the
 variable MyVar. Correct would be:
 
-   ```autohotkey
+
+```autohotkey
 MyVar:=TF_ReadLines(MyVar,5) ; this is OK
 MyVar:=TF_ReadLines(TF("TestFile.txt","MyVar"),5) ; this is OK
-   ```
+```
 
 --------------------------------------------------------------------------
 
@@ -331,6 +338,7 @@ MyVar:=TF_ReadLines(TF("TestFile.txt","MyVar"),5) ; this is OK
 You can find examples of most functions in the "example script" here [http://www.autohotkey.com/forum/viewtopic.php?p=280363#280363](http://www.autohotkey.com/forum/viewtopic.php?p=280363#280363)
 
 <a name="TF"></a>
+
 **TF(TextFile, CreateGlobalVar="T")**
 
 - Purpose: Read contents of file to create global variable, **T** by default.
@@ -340,18 +348,21 @@ You can find examples of most functions in the "example script" here [http://www
 Note: see background info and examples above at [Files and Variables](#FilesAndVariables).
 
 <a name="TF_CountLines"></a>
+
 **TF_CountLines(Text)**
 
 - Purpose: Returns the number of lines in a file or variable
 - Parameters: Text
 - Credits: SKAN
 
-   ```autohotkey
+
+```autohotkey
 MsgBox % TF_CountLines("File.txt") ; show the number of lines of file in a MsgBox
-Lines:=TF_CountLines("File.txt") ; store the number of lines of file in a variable 
-   ```
+Lines:=TF_CountLines("File.txt") ; store the number of lines of file in a variable
+```
 
 <a name="TF_Count"></a>    
+
 **TF_Count(String, Char)**
 
 - Purpose: Count the number of occurrence of Char using StringReplace
@@ -360,26 +371,31 @@ Lines:=TF_CountLines("File.txt") ; store the number of lines of file in a variab
 Notes: do **not** use it to count lines (using `n) because it will return an incorrect value,
 use TF_CountLines for counting lines. TF_Count does not support files and only works with variables.
 
-   ```autohotkey
+
+```autohotkey
 MsgBox % TF_Count("Hello this is an example", "i") ; count how many i's there are in the string
-   ```
+```
+
 <a name="TF_ReadLines"></a>
+
 **TF_ReadLines(Text, StartLine = 1, EndLine = 0, RemoveTrailing = 0)**
 
 - Purpose: Return the specified lines, can be used to read sections of a file or variable.
 - Parameters: Text, StartLine, EndLine
 
-
 Note: by default it will add a newline character to the last line, so if you want to 
 append new data you don't have to start it with a newline char. If you don't want
 that use RemoveTrailing = 1.
 
-   ```autohotkey
+
+```autohotkey
 MsgBox % TF_ReadLines("File.txt",5) ; Read lines 5 to end of file, show result in a MsgBox
 Lines:=TF_ReadLines("File.txt",5) ; Read lines 5 to end of file, store result in variable
 MsgBox % TF_ReadLines("File.txt",5,0,1) ; 0 for end line indicates until end of file, remove trailing empty line.
-   ```
+```
+
 <a name="TF_Tail"></a>
+
 **TF_Tail(Text, Lines = 1, RemoveTrailing = 0, ReturnEmpty = 1)**
 
 - Purpose: Read last X lines from file or variable
@@ -397,72 +413,81 @@ Notes:
     to start it with a newline char. If you don't want that use
     RemoveTrailing = 1
 
-   ```autohotkey
+
+```autohotkey
 MsgBox % TF_Tail("File.txt", 3) ; get the last three lines
 MsgBox % TF_Tail("File.txt", -2) ; get second to last line, negative values only return one line
 MsgBox % TF_Tail("File.txt", 5, 0, 0) ; return the last five lines, with trailing new line and excluding empty lines
-   ```
+```
 
-<a name="TF_Replace"></a>    
+<a name="TF_Replace"></a>
+
 **TF_Replace(Text, SearchText, Replacement="")**
 
 - Purpose: Find and Replace text in entire file (using StringReplace)
 - Parameters: Text, SearchText, Replacement
 
 
-   ```autohotkey
+```autohotkey
 TF_Replace("File.txt","key","lock")            ; pass on a file, replace the word "key" with "lock" in file_copy.txt
-   ```
+```
+
 <a name="TF_ReplaceInLines"></a>
+
 **TF_ReplaceInLines(Text, StartLine = 1, EndLine = 0, SearchText = "", ReplaceText = "")**
 
 - Purpose: Find and Replace text on specific lines (using StringReplace)
 - Parameters: Text, StartLine, EndLine, SearchText, ReplaceText
 
 
-   ```autohotkey
+```autohotkey
 TF_ReplaceInLines("!File.txt","1,3,9","","key","lock") ;  update source file, replace "key" with "lock" in lines 1, 3 and 9
-   ```
+```
 
 <a name="TF_RegExReplace"></a>
+
 **TF_RegExReplace(Text, NeedleRegEx = "", Replacement = "")**
 
 - Purpose: Find and Replace text in entire file (using RegExReplace)
 - Parameters: Text, NeedleRegEx, Replacement
 
 
-   ```autohotkey
+```autohotkey
 TF_RegExReplace("File.txt","im)^(.*)$","[$1]") ; pass on a file, wrap all lines in []
-   ```
+```
 
 <a name="TF_RegExReplaceInLines"></a>
+
 **TF_RegExReplaceInLines(Text, StartLine = 1, EndLine = 0, NeedleRegEx= "", Replacement = "")**
 
 - Purpose: Find and Replace text in specific lines (using RegExReplace)
 - Parameters: Text, StartLine, EndLine, NeedleRegEx, Replacement
 
 
-   ```autohotkey
+```autohotkey
 TF_RegExReplaceInLines("File.txt",3,8," [a-z]{3} "," lock ")  ; replace any three letter word with "lock" in lines 3 to 8
-   ```
+```
 
-<a name="TF_RemoveLines"></a>    
+<a name="TF_RemoveLines"></a>
+
 **TF_RemoveLines(Text, StartLine = 1, EndLine = 0)**
 
 - Purpose: Remove specified lines from file
 - Parameters: Text, StartLine, EndLine
 
 
-   ```autohotkey
+```autohotkey
 TF_RemoveLines("File.txt", 5, 10) ; remove lines 5 to 10 from file
-   ```
-    
+```
+
 Note: If you pass on a negative value for StartLine, example
 TF_RemoveLines(Text, -5, .... it will remove these lines from the end
 of Text, so -5 will remove the last five lines. The EndLine parameter is
 ignored.
 
+
 <a name="TF_RemoveBlankLines"></a>
+
 **TF_RemoveBlankLines(Text, StartLine = 1, EndLine = 0)**
 
 - Purpose: Remove blank lines from file (in specified section)
@@ -471,88 +496,98 @@ ignored.
 
 Note: also removes lines with only tabs & spaces e.g. "white space"
 
-   ```autohotkey
+
+```autohotkey
 TF_RemoveBlankLines("File.txt") ; remove blanklines in entire file
-   ```
-    
+```
+
+
 <a name="TF_RemoveDuplicateLines"></a>
+
 **TF_RemoveDuplicateLines(Text, StartLine = 1, Endline = 0, Consecutive= 0, CaseSensitive = false)**
 
 - Purpose: Remove duplicate lines, optionally you can specify if they need to be Consecutive and / or Case sensitive
 - Parameters: Text, StartLine, EndLine, Consecutive (0 or 1), CaseSensitive (true or false)
 
 
-   ```autohotkey
+```autohotkey
 TF_RemoveDuplicateLines("File.txt","","",1,false) ; remove only Consecutive duplicate lines
-   ```
+```
 
 <a name="TF_InsertLine"></a>
+
 **TF_InsertLine(Text, StartLine = 1, Endline = 0, InsertText = "")**
 
 - Purpose: Insert text in specified lines
 - Parameters: Text, StartLine, Endline, InsertText
 
 
-   ```autohotkey
+```autohotkey
 TF_InsertLine("File.txt","2,4,9",5,"---")     ; insert --- in lines 2 4 and 9. 5 is endline will be ignored
-   ```
+```
 
 <a name="TF_ReplaceLine"></a>
+
 **TF_ReplaceLine(Text, StartLine = 1, Endline = 0, ReplaceText = "")**
 
 - Purpose: Replace specified lines with new text
 - Parameters: Text, StartLine, Endline, ReplaceText
 
 
-   ```autohotkey
+```autohotkey
 TF_ReplaceLine("File.txt","1+3",8,"---")      ; replace lines 1 4 and 7. 8 is end line so no more lines are processed after 
-   ```
+```
 
 <a name="TF_InsertPrefix"></a>
+
 **TF_InsertPrefix(Text, StartLine = 1, EndLine = 0, Text = "")**
 
 - Purpose: Insert a text at the BEGINNING of each of the specified lines
 - Parameters: Text, StartLine, Endline, Text
 
 
-   ```autohotkey
+```autohotkey
 TF_InsertPrefix("File.txt",5,8, "Hello ")          ; Prefix Hello in lines 5 to 8
-   ```
+```
 
 <a name="TF_InsertSuffix"></a>
+
 **TF_InsertSuffix(Text, StartLine = 1, EndLine = 0 , Text = "")**
 
 - Purpose: Append a text at the END of each of the specified lines
 - Parameters: Text, StartLine, Endline, Text
 
 
-   ```autohotkey
+```autohotkey
 TF_InsertSuffix("File.txt","2-4,6-9","", " Hello")  ; Suffix Hello in lines 2 to 4 and 6 to 9
-   ```
+```
 
 <a name="TF_TrimLeft"></a>
+
 **TF_TrimLeft(Text, StartLine = 1, EndLine = 0, Count = 1)**
 
 - Purpose: Trim number of specified columns from specified lines
 - Parameters: Text, StartLine, Endline, Text, Count
 
 
-   ```autohotkey
+```autohotkey
 TF_TrimLeft("File.txt","","",25)                    ; Trim Left 25 Characters of all lines
-   ```
-    
+```
+
 <a name="TF_TrimRight"></a>
+
 **TF_TrimRight(Text, StartLine = 1, EndLine = 0, Count = 1)**
 
 - Purpose: Trim number of specified columns from specified lines
 - Parameters: Text, StartLine, Endline, Text, Count
 
 
-   ```autohotkey
+```autohotkey
 TF_TrimRight("File.txt","4,6,8","",45)              ; Trim Right 45 Characters in lines 4, 6 and 8
-   ```
+```
 
 <a name="TF_AlignLeft"></a>
+
 **TF_AlignLeft(Text, StartLine = 1, EndLine = 0, Columns = 80, Padding = 0)**
 
 - Purpose: Align lines according to number of specified columns
@@ -568,16 +603,18 @@ Padding = 0 Remove trailing white space
 Padding = 1 Keep trailing white space
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_AlignLeft("File.txt","","",90, 1)    ; AlignLeft all lines, keep trailing white space
-   ```
+```
 
 <a name="TF_AlignCenter"></a>
+
 **TF_AlignCenter(Text, StartLine = 1, EndLine = 0, Columns = 80, Padding = 0)**
 
 - Purpose: Align lines according to number of specified columns
 - Parameters: Text, Columns, StartLine, Endline, Text
- - uses some of SKAN functions
+- uses some of SKAN functions
 
 Note: Using the Align functions will not take into account any leading or trailing
 spaces a line had BEFORE processing. So all white space before and after the text
@@ -588,11 +625,13 @@ Skip = 0 process empty lines, fill with spaces
 Skip = 1 skip empty lines, do not fill with spaces
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_AlignCenter("File.txt","","",150, 1) ; AlignCenter, all lines skip empty lines, do not fill with spaces
-   ```
-    
+```
+
 <a name="TF_AlignRight"></a>
+
 **TF_AlignRight(Text, StartLine = 1, EndLine = 0, Columns = 80, Skip = 0)**
 
 - Purpose: Align lines according to number of specified columns
@@ -608,11 +647,13 @@ Skip = 0 process empty lines, fill with spaces
 Skip = 1 skip empty lines, do not fill with spaces
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_AlignRight("File.txt","","", 190, 0) ; AlignRight, all lines, do not skip empty lines fill them with spaces
-   ```
+```
 
 <a name="TF_LineNumber"></a>
+
 **TF_LineNumber(Text, Leading = 0, Restart = 0, Char = 0)**
 
 - Purpose: Insert line numbers before each line
@@ -626,22 +667,25 @@ Restart = restart counter after X lines (starting again at 1)
 Char = character to use for leading/padding. Default 0, but can be any character. Tip: use a space.
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_LineNumber("File.txt",1,15,A_Space)  ; Add linenumbers, padding with spaces, linenumbers are aligned right because of space
-   ```
+```
 
 <a name="TF_ConCat"></a>
+
 **TF_ConCat(FirstTextFile, SecondTextFile, OutputFile, Blanks = 0, FirstPadMargin = 0, SecondPadMargin = 0)**
 
 - Purpose: Join Text files side by side (line1-from-file1 line1-from-file2 newline line2-from-file1 line2-from-file2 newline etc)
 - Parameters: FirstTextFile, SecondTextFile, OutputFile, Blanks, FirstPadMargin, SecondPadMargin
 
-Based on: CONCATenate text files, ftp://garbo.uwasa.fi/pc/ts/tsfltc22.zip
+Based on: CONCATenate text files, ftp://garbo.uwasa.fi/pc/ts/tsfltc22.zip - Backup: http://www.retroarchive.org/garbo/pc/ts/
 
 With TF_ConCat you can join Text files side by side. Blanks is number of blanks between lines.
 You can pad blanks the right margin of either of the text files, for this use FirstPadMargin and SecondPadMargin.
 
 <a name="TF_ColGet"></a>
+
 **TF_ColGet(Text, StartLine = 1, EndLine = 0, StartColumn = 1, EndColumn = 1, Skip = 0)**
 
 - Purpose: Get specified columns from text file
@@ -654,17 +698,19 @@ skip = 1, skip lines shorter then startcolumn position
 TF_ColGet and TF_ColPut accept negative StartColumn parameter. This can be used to "Get" or "Put" text in the x-th "column" from the right
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_ColGet("File.txt","","",2,13)    ; get columns 2 to 13 from all lines, so it removes all other columns from the file or variable
-   ```
-    
+```
+
 <a name="TF_ColPut"></a>
+
 **TF_ColPut(Text, Startline = 1, EndLine = 0, StartColumn = 1, Text = "", Skip = 0)**
 
 - Purpose: Insert text at specified columns in text file
 - Parameters: Text, StartLine, EndLine, StartColumn, EndColumn, Skip (0 or 1)
 
-Based on: COLPUT.EXE & CUT.EXE, ftp://garbo.uwasa.fi/pc/ts/tsfltc22.zip
+Based on: COLPUT.EXE & CUT.EXE, ftp://garbo.uwasa.fi/pc/ts/tsfltc22.zip - Backup: http://www.retroarchive.org/garbo/pc/ts/
 
 ~~~~
 Note: A TAB character is 1 character so for files with TABS the column might not be where you expect it to be
@@ -673,11 +719,13 @@ skip = 1, skip lines shorter then startcolumn position
 TF_ColGet and TF_ColPut accept negative StartColumn parameter. This can be used to "Get" or "Put" text in the x-th "column" from the right
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_ColPut("File.txt","","",5, "|", 0) ; insert | in column 5 of all lines including empty lines (= | will be at column 1)
-   ```
-    
+```
+
 <a name="TF_ColCut"></a>
+
 **TF_ColCut(Text, StartLine = 1, EndLine = 0, StartColumn = 1, EndColumn = 1)**
 
 - Purpose: Remove specified columns from text file
@@ -685,11 +733,13 @@ TF_ColPut("File.txt","","",5, "|", 0) ; insert | in column 5 of all lines includ
 
 Based on: COLPUT.EXE & CUT.EXE, ftp://garbo.uwasa.fi/pc/ts/tsfltc22.zip
 
-   ```autohotkey
+
+```autohotkey
 TF_ColCut("File.txt", "2+2", "", 4, 38)  ; remove columns 4 to 38 in lines 2 4 6 8 etc
-   ```
+```
 
 <a name="TF_ReverseLines"></a>
+
 **TF_ReverseLines(Text, StartLine = 1, EndLine = 0)**
 
 - Purpose: Reverse the order of specified lines
@@ -697,11 +747,13 @@ TF_ColCut("File.txt", "2+2", "", 4, 38)  ; remove columns 4 to 38 in lines 2 4 6
 
 Note: Startline parameter can not use specific lines, sections or incremental values here
 
-   ```autohotkey
+
+```autohotkey
 TF_ReverseLines("File.txt",2,9) ; reverse lines 2 to 9
-   ```
-    
+```
+
 <a name="TF_Find"></a>
+
 **TF_Find(Text, StartLine = 1, EndLine = 0, SearchText = "", ReturnFirst = 1, ReturnText = 0)**
 
 - Purpose: Find text using RegExMatch, return line(s), text or lines and text
@@ -723,12 +775,14 @@ ReturnText = 1 return entire line (text). This simulates a basic grep feature
 ReturnText = 2 return line numbers + entire line (text). This simulates a basic grep feature 
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 MsgBox % TF_Find("File.txt", "", "", "keys") ; return first line number with keys in it
 MsgBox % TF_Find("File.txt", "", "", " c[a-z]+s ", 0, 1) ; find all lines with words that start with a c an end with an s
-   ```
+```
 
 <a name="TF_SplitFileByLines"></a>
+
 **TF_SplitFileByLines(Text, SplitAt, Prefix = "file", Extension = "txt", InFile = 1)**
 
 - Purpose: Split a text file in to several others based on number of lines
@@ -758,14 +812,16 @@ c) Split at specific lines using a comma "," as separator, example TF_SplitFileB
    will split text at lines 5,81,135 until end of file (e.g. last file will be from line 135 until the end)
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_SplitFileByLines("File.txt", 2, "part", "zec", 1) ; split source file every 2 lines, include 2nd line INFILE
 ; illustrate use of variables and returned arrays:
 TF_SplitFileByLines(Variable, 2, "part", "zec", 1)
 MsgBox % "Array size: " . Part0 . "`n1st array element: "  Part1
-   ```
-    
+```
+
 <a name="TF_SplitFileByText"></a>
+
 **TF_SplitFileByText(Text, SplitAt, Prefix = "file", Extension = "txt", InFile = 1)**
 
 - Purpose: Split a text file in to several others based on text
@@ -784,13 +840,14 @@ as Prefix0 and the array elements as Prefix1, Prefix2 etc similar to the AHK Str
 command. The Extension parameter is ignored when using variables. Some characters are 
 illegal such as - + @ % & \* _ \\ / [ ] etc to use in Prefix, stick to a-z A-Z.
 
-   ```autohotkey
+
+```autohotkey
 TF_SplitFileByText("File.txt", "button", "part", "zec", 1)   ; split source file on every line with the word button, include that line INFILE
 ; illustrate use of variables and returned arrays:
 TF_SplitFileByText(Variable, "keyboard", "part", "zec", 1)
 MsgBox % "Array size: " . Part0 . "`n1st array element: "  Part1
-   ```
-    
+```
+
 **TF_Merge(FileList, Separator = "\`n", FileName = "merged.txt")**
 
 - Purpose: Merge several files into one
@@ -809,7 +866,8 @@ file3.txt
 
 Note: TF_Merge, TF_Prepend, TF_Append currently do not support variables and only work with FILES.
 
-   ```autohotkey
+
+```autohotkey
 ; using Loop (files & folders) to create one quickly if you want to merge all TXT files for example:
 Loop, c:\*.txt
   FileList .= A_LoopFileFullPath "`n"
@@ -829,9 +887,10 @@ TF_Merge(FileList) ; will create a file in the current script dir called merged.
 ; You could skip the Path:= step above by calling TF_ReadLines directly in TF_InsertPrefix, but you would have to delete the first line AFTER it like so:
 ;FileList:=TF_InsertPrefix(FileList, "", "", TF_ReadLines(FileList,1,1,1) . "\")
 ;FileList:=TF_RemoveLines(FileList,1,1)
-   ```
+```
 
 <a name="TF_Prepend"></a>
+
 **TF_Prepend(File1, File2)**
 
 - Purpose: Prepend file1 to file2 (file2 is changed, uses TF_Merge)
@@ -840,6 +899,7 @@ TF_Merge(FileList) ; will create a file in the current script dir called merged.
 Note: TF_Merge, TF_Prepend, TF_Append currently do not support variables and only work with FILES.
 
 <a name="TF_Append"></a>
+
 **TF_Append(File1, File2)**
 
 - Purpose: Append file1 to file2 (file2 is changed, uses TF_Merge)
@@ -848,6 +908,7 @@ Note: TF_Merge, TF_Prepend, TF_Append currently do not support variables and onl
 Note: TF_Merge, TF_Prepend, TF_Append currently do not support variables and only work with FILES.
 
 <a name="TF_Wrap"></a>
+
 **TF_Wrap(Text, Columns = 80, AllowBreak = 0, StartLine = 1, EndLine = 0)**
 
 - Purpose: Wrap (specified) lines
@@ -858,11 +919,13 @@ AllowBreak = 0 will not "break" words, so it will take into account whole words 
 AllowBreak = 1 will break words
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_Wrap("File.txt",60)            ; wrap at col 60
-   ```    
+```    
 
 <a name="TF_WhiteSpace"></a>
+
 **TF_WhiteSpace(Text, RemoveLeading = 1, RemoveTrailing = 1, StartLine = 1, EndLine = 0)**
 
 - Purpose: Remove leading and/or trailing whitespace
@@ -875,11 +938,13 @@ RemoveTrailing = 0 Do not remove trailing white space of lines
 RemoveTrailing = 1 Remove trailing white space of lines       
 ~~~~
 
-   ```autohotkey
+
+```autohotkey
 TF_WhiteSpace("File.txt", 1, 0, "5-10") ; remove leading and keep trailing whitespace in lines 5 to 10
-   ```    
+```    
 
 <a name="TF_Substract"></a>
+
 **TF_Substract(File1, File2, PartialMatch = 0)**
 
 - Purpose: Delete lines from file1 in file2 (using StringReplace)
@@ -893,6 +958,7 @@ PartialMatch = 2 allow for paRTIal match of line, but remove entire line (uses R
 ~~~~
 
 <a name="TF_RangeReplace"></a>
+
 **TF_RangeReplace(Text, SearchTextBegin, SearchTextEnd, ReplaceText = "", CaseSensitive = "False", KeepBegin = 0, KeepEnd = 0)**
 
 - Purpose: A Range Replacement allows you to perform a replacement on text whose beginning and ending remains the same, but whose middle contents might change.
@@ -916,12 +982,14 @@ SearchTextBegin/End **can** be on the same line. Remember this LIB mainly operat
 a line by line basis. This Function only operates on the FIRST SearchTextBegin to 
 the FIRST SearchTextEnd it finds.
 
-   ```autohotkey
+
+```autohotkey
 Range=[insert this`ntext for the`nrange replace Text`ntest function]
 TF_RangeReplace("File.txt", "Create hotkeys for keyboard", "into an EXE file", Range)
-   ```
-   
+```
+
 <a name="TF_MakeFile"></a>
+
 **TF_MakeFile(Text, Lines = 1, Columns = 1, Fill = " ")**
 
 - Purpose: Create file of X lines and Y columns, fill with space or other character(s)
@@ -930,6 +998,7 @@ TF_RangeReplace("File.txt", "Create hotkeys for keyboard", "into an EXE file", R
 Sometimes you need an "empty" file before you can start adding line numbers or putting data into a file.
 
 <a name="TF_Tab2Spaces"></a>
+
 **TF_Tab2Spaces(Text, TabStop = 4, StartLine = 1, EndLine = 0)**
 
 - Purpose: Convert tabs to spaces, shorthand for TF_ReplaceInLines
@@ -941,6 +1010,7 @@ TabStop = number of spaces to replace a TAB with, so 4 means a TAB will be repla
 ~~~~
 
 <a name="TF_Spaces2Tab"></a>
+
 **TF_Spaces2Tab(Text, TabStop = 4, StartLine = 1, EndLine = 0)**
 
 - Purpose: Convert tabs to spaces, shorthand for TF_ReplaceInLines
@@ -950,7 +1020,9 @@ TabStop = number of spaces to replace a TAB with, so 4 means a TAB will be repla
 ~~~~
 TabStop = number of spaces to replace with a TAB, so 4 means 4 spaces will be replaced by a TAB
 ~~~~
+
 <a name="TF_Sort"></a>
+
 **TF_Sort(Text, SortOptions = "", StartLine = 1, EndLine = 0)**
 
 - Purpose: Sort (section of) TextFile
@@ -965,6 +1037,7 @@ When dealing with variables/strings instead of text files the native AHK Sort co
 of course more useful.
 
 <a name="TF_Join"></a>
+
 **TF_Join(Text, StartLine = 1, EndLine = 0, SmartJoin = 0, Char = 0)**
 
 - Purpose: Join lines (section of)
@@ -978,6 +1051,7 @@ Char: character(s) to use between new lines, defaults to a space. To use nothing
 Note: StartLine can not use increments. It can have multiple sections.
 
 <a name="TF_Save"></a>
+
 **TF_Save(Text, FileName, OverWrite = 1)**
 
 - Purpose: To save a variable to a file
@@ -988,7 +1062,18 @@ OverWrite = 0 create filename_copy.ext if filename.ext exists
 OverWrite = 1 will overwrite filename.ext if filename.ext exists (default)
 ~~~~
 
+# TF Lib Errors
+
+1. Error when using the ! prefix.  
+   The correct syntax is "!file.txt". If you do this !"file.txt" (the ! is not within the quotes it will not be able to read a file)
+2. If you pass on a single zero as text ```TF_TrimLeft("0",1,1,3)``` and there is no file with that name ```"0"``` it will shown an error. More as one zero as "text" is OK.
+
 # History
+
+**History v3.7, 16 April 2017**
+
+- Added: additional check for passing on just zero/zeros as text to TF functions in TF_GetData() - see v3.6 below
+- Fix: changed readme.md to fix rendering issue of MD files on GH - https://github.com/hi5/TF/issues/5
 
 **History v3.6, 25 December 2014**
 
