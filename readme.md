@@ -1,4 +1,4 @@
-# TF: Textfile & String Library for AutoHotkey [lib] - v3.7
+# TF: Textfile & String Library for AutoHotkey [lib] - v3.8
 
 __A "Swiss Army Knife" library for Text (files)__
 
@@ -1069,6 +1069,10 @@ OverWrite = 1 will overwrite filename.ext if filename.ext exists (default)
 2. If you pass on a single zero as text ```TF_TrimLeft("0",1,1,3)``` and there is no file with that name ```"0"``` it will shown an error. More as one zero as "text" is OK.
 
 # History
+
+**History v3.8, 11 December 2020**
+
+- Prevent TF_Sort from removing last character from the last line https://github.com/hi5/TF/issues/11
 
 **History v3.7, 16 April 2017**
 
