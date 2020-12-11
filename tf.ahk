@@ -1,8 +1,8 @@
 /*
 Name          : TF: Textfile & String Library for AutoHotkey
-Version       : 3.7
+Version       : 3.8
 Documentation : https://github.com/hi5/TF
-AHKScript.org : http://www.ahkscript.org/boards/viewtopic.php?f=6&t=576
+AutoHotkey.com: https://www.autohotkey.com/boards/viewtopic.php?f=6&t=576
 AutoHotkey.com: http://www.autohotkey.com/forum/topic46195.html (Also for examples)
 License       : see license.txt (GPL 2.0)
 
@@ -1143,7 +1143,7 @@ TF_Sort(Text, SortOptions = "", StartLine = 1, EndLine = 0) ; use the SORT optio
 		 OutPut .= ToSort
 		 OutPut .= TF_ReadLines(Text, EndLine+1) ; append last section
 		}
-	 Return TF_ReturnOutPut(OW, OutPut, FileName)
+	 Return TF_ReturnOutPut(OW, OutPut, FileName, 0) ; https://github.com/hi5/TF/issues/11
 	}
 
 TF_Tail(Text, Lines = 1, RemoveTrailing = 0, ReturnEmpty = 1)
